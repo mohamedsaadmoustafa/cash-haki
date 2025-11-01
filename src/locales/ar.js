@@ -54,7 +54,9 @@ const ar =  {
     "sortByDate": "ترتيب حسب التاريخ",
     "sortByAmount": "ترتيب حسب المبلغ",
     "ascending": "تصاعدي",
-    "descending": "تنازلي"
+    "descending": "تنازلي",
+    "undefinedCategory": "الفئة غير محددة",
+
 };
 
 export default ar;

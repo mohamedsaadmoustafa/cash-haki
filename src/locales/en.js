@@ -54,7 +54,9 @@ const en = {
     "sortByDate": "Sort by Date",
     "sortByAmount": "Sort by Amount",
     "ascending": "Ascending",
-    "descending": "Descending"
+    "descending": "Descending",
+    "undefinedCategory": "Undefined Category",
+
 };
 
 export default en;

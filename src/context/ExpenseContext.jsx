@@ -48,6 +48,7 @@ export function ExpenseProvider({ children }) {
                 ...item,
                 id: `e_${Date.now()}`,
                 date: item.date || new Date().toISOString(),
+                category: item.category || "—",
             };
             const updated = [newItem, ...list];
             undoRef.current = { before: list, after: updated };
