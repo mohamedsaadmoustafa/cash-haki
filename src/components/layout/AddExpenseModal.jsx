@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Form, Input, InputNumber, DatePicker } from "antd";
+import { Modal, Form, Input, InputNumber, DatePicker, Button } from "antd";
 import { useExpenses } from "../../context/ExpenseContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -27,9 +27,7 @@ export default function AddExpenseModal({ isModalVisible, setIsModalVisible }) {
             title={t("addExpenseModalTitle")}
             open={isModalVisible}
             onCancel={() => setIsModalVisible(false)}
-            onOk={handleOk}
-            okText={t("add")}
-            cancelText={t("cancel")}
+            footer={null} // we'll handle buttons manually
             className={darkMode ? "dark-modal" : ""}
         >
             <Form
@@ -66,6 +64,29 @@ export default function AddExpenseModal({ isModalVisible, setIsModalVisible }) {
                         style={{ width: "100%" }}
                         className={darkMode ? "bg-gray-700 text-white" : ""}
                     />
+                </Form.Item>
+
+                {/* Button dynamically enabled/disabled based on required fields */}
+                <Form.Item shouldUpdate>
+                    {() => {
+                        const desc = form.getFieldValue("desc");
+                        const amount = form.getFieldValue("amount");
+                        const disabled = !desc || amount === undefined || amount === null;
+
+                        return (
+                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <Button
+                                    style={{ marginRight: 8 }}
+                                    onClick={() => setIsModalVisible(false)}
+                                >
+                                    {t("cancel")}
+                                </Button>
+                                <Button type="primary" onClick={handleOk} disabled={disabled}>
+                                    {t("add")}
+                                </Button>
+                            </div>
+                        );
+                    }}
                 </Form.Item>
             </Form>
         </Modal>
