@@ -41,7 +41,7 @@ export function ExpenseProvider({ children }) {
 
     const addManual = useCallback(
         (item) => {
-            if (!item || !item.name || !item.amount) {
+            if (!item || !item.desc || !item.amount) {
                 return message.warning(t("invalidItem"));
             }
             const newItem = {
@@ -56,6 +56,7 @@ export function ExpenseProvider({ children }) {
         },
         [list, t]
     );
+
 
     const editItem = useCallback(
         (updatedItem) => {
