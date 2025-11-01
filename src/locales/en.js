@@ -50,7 +50,11 @@ const en = {
     allCleared: "🧹 All expenses cleared",
     nothingToUndo: "ℹ️ Nothing to undo",
     undoSuccess: "↩️ Undo successful",
-
+    "date": "Date",
+    "sortByDate": "Sort by Date",
+    "sortByAmount": "Sort by Amount",
+    "ascending": "Ascending",
+    "descending": "Descending"
 };
 
 export default en;

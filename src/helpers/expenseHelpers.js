@@ -1,4 +1,3 @@
-// helpers/expenseHelpers.js
 export const filterByMonthYear = (list, month = "all", year = "all") => {
     return list.filter(item => {
         const d = new Date(item.date);

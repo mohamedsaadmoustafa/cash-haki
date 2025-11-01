@@ -9,6 +9,7 @@ import {
     Input,
     InputNumber,
     DatePicker,
+    Select,
 } from "antd";
 import dayjs from "dayjs";
 import { useExpenses } from "../../context/ExpenseContext";
@@ -30,6 +31,8 @@ export default function ExpenseList() {
     const [page, setPage] = useState(1);
     const [filter, setFilter] = useState("all");
     const [dateRange, setDateRange] = useState([null, null]);
+    const [sortBy, setSortBy] = useState("date");
+    const [sortOrder, setSortOrder] = useState("desc");
     const pageSize = 5;
 
     // Categories for filtering
@@ -38,9 +41,9 @@ export default function ExpenseList() {
         [list]
     );
 
-    // Filter and paginate
+    // Filter, sort, and paginate
     const filteredList = useMemo(() => {
-        return list.filter((item) => {
+        const filtered = list.filter((item) => {
             const categoryMatch = filter === "all" || item.category === filter;
             const dateMatch =
                 !dateRange[0] ||
@@ -49,7 +52,17 @@ export default function ExpenseList() {
                     dayjs(item.date).isBefore(dateRange[1], "day"));
             return categoryMatch && dateMatch;
         });
-    }, [list, filter, dateRange]);
+
+        return filtered.sort((a, b) => {
+            let compareValue = 0;
+            if (sortBy === "date") {
+                compareValue = new Date(a.date) - new Date(b.date);
+            } else if (sortBy === "amount") {
+                compareValue = a.amount - b.amount;
+            }
+            return sortOrder === "asc" ? compareValue : -compareValue;
+        });
+    }, [list, filter, dateRange, sortBy, sortOrder]);
 
     const paginatedList = useMemo(() => {
         const start = (page - 1) * pageSize;
@@ -80,7 +93,7 @@ export default function ExpenseList() {
 
     return (
         <>
-            {/* Filters */}
+            {/* Filters & Sorting */}
             <div className="flex items-center gap-2 mb-3 flex-nowrap overflow-x-auto w-full">
                 <ExpenseFilter
                     filter={filter}
@@ -99,10 +112,32 @@ export default function ExpenseList() {
                     placeholder={[t("filterByDate"), t("filterByDate")]}
                 />
 
+                <Select
+                    value={sortBy}
+                    onChange={(value) => setSortBy(value)}
+                    style={{ width: 120 }}
+                    className={darkMode ? "bg-gray-700 text-white" : ""}
+                >
+                    <Select.Option value="date">{t("sortByDate")}</Select.Option>
+                    <Select.Option value="amount">{t("sortByAmount")}</Select.Option>
+                </Select>
+
+                <Select
+                    value={sortOrder}
+                    onChange={(value) => setSortOrder(value)}
+                    style={{ width: 120 }}
+                    className={darkMode ? "bg-gray-700 text-white" : ""}
+                >
+                    <Select.Option value="asc">{t("ascending")}</Select.Option>
+                    <Select.Option value="desc">{t("descending")}</Select.Option>
+                </Select>
+
                 <ResetFilterButton
                     onReset={() => {
                         setFilter("all");
                         setDateRange([null, null]);
+                        setSortBy("date");
+                        setSortOrder("desc");
                         setPage(1);
                     }}
                     language={language}
@@ -176,11 +211,7 @@ export default function ExpenseList() {
                 cancelText={t("cancel")}
                 className={darkMode ? "dark-modal" : ""}
             >
-                <Form
-                    layout="vertical"
-                    form={form}
-                    className={darkMode ? "text-gray-100" : ""}
-                >
+                <Form layout="vertical" form={form} className={darkMode ? "text-gray-100" : ""}>
                     <Form.Item
                         name="desc"
                         label={t("desc")}
