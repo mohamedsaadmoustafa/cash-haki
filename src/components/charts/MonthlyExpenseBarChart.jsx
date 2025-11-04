@@ -14,19 +14,7 @@ import { useLanguage } from "../../context/LanguageContext";
 
 export default function MonthlyExpenseBarChart({ data }) {
     const { darkMode } = useTheme();
-    const { language } = useLanguage();
-
-    const t = {
-        ar: {
-            title: "المصروفات الشهرية",
-            noData: "لا توجد بيانات بعد",
-        },
-        en: {
-            title: "Monthly Expenses",
-            noData: "No data yet",
-        },
-    }[language];
-
+    const { t } = useLanguage();
     const axisColor = darkMode ? "#ccc" : "#333";
     const gridColor = darkMode ? "#444" : "#e0e0e0";
     const barColor = darkMode ? "#4ade80" : "#1677ff";
@@ -38,10 +26,11 @@ export default function MonthlyExpenseBarChart({ data }) {
             }`}
             variant="outlined"
         >
-            <h4 className="text-sm font-medium mb-3">{t.title}</h4>
+            <h4 className="text-sm font-medium mb-3">{t("monthlyExpenses")}</h4>
 
-            {data.length === 0 ? (
-                <Empty description={t.noData} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            {data.length === 0 ? (<Empty description={<span style={{color: darkMode ? "#ccc" : "#555"}}>
+            {t("noDataYet")}
+        </span>} image={Empty.PRESENTED_IMAGE_SIMPLE}/>
             ) : (
                 <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={data}>

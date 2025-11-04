@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Space, Tooltip, Popconfirm } from "antd";
+import { Button, Space, Tooltip, Popconfirm, ConfigProvider, theme as antdTheme } from "antd";
 import {
     PlayCircleOutlined,
     StopOutlined,
@@ -14,16 +14,17 @@ import AddExpenseModal from "./AddExpenseModal";
 import { exportCSV } from "../../helpers/exportCSV";
 
 const MainActionsButtons = ({
-                              listening,
-                              startListening,
-                              stopListening,
-                              list,
-                              clearAll,
-                              undo,
-                          }) => {
+                                listening,
+                                startListening,
+                                stopListening,
+                                list,
+                                clearAll,
+                                undo,
+                            }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { language } = useLanguage();
-    const { darkMode } = useTheme();
+    const { darkMode } = useTheme(); // ✅ correct from your ThemeContext
+    const isArabic = language === "ar";
 
     const t = {
         ar: {
@@ -55,14 +56,27 @@ const MainActionsButtons = ({
         exportCSV(list);
     };
 
-    const btnBase = darkMode ? "bg-gray-700 text-white border-gray-600" : "";
+    // ✅ Unified button styling
+    const btnBase = darkMode
+        ? "bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
+        : "bg-white hover:bg-gray-50 text-gray-800 border-gray-300";
 
     return (
-        <>
+        <ConfigProvider
+            theme={{
+                algorithm: darkMode ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+                token: {
+                    colorBgBase: darkMode ? "#1f2937" : "#ffffff", // gray-800 / white
+                    colorTextBase: darkMode ? "#f3f4f6" : "#111827", // gray-100 / gray-900
+                    borderRadius: 8,
+                },
+            }}
+            direction={isArabic ? "rtl" : "ltr"}
+        >
             <div
                 className={`flex justify-center sm:justify-start transition-colors duration-300 ${
                     darkMode ? "text-gray-100" : "text-gray-800"
-                }`}
+                } ${isArabic ? "rtl text-right" : "ltr text-left"}`}
             >
                 <Space wrap size="middle">
                     <Tooltip title={t.startTooltip}>
@@ -86,7 +100,7 @@ const MainActionsButtons = ({
                         type="dashed"
                         icon={<PlusOutlined />}
                         onClick={() => setIsModalVisible(true)}
-                        className={`${btnBase}`}
+                        className={btnBase}
                     >
                         {t.addExpense}
                     </Button>
@@ -102,12 +116,17 @@ const MainActionsButtons = ({
                         {t.exportCSV}
                     </Button>
 
-                    <Popconfirm title={t.confirmClear} onConfirm={clearAll} okText={t.clearAll}>
+                    <Popconfirm
+                        title={t.confirmClear}
+                        onConfirm={clearAll}
+                        okText={t.clearAll}
+                        overlayClassName={darkMode ? "dark-modal" : ""}
+                    >
                         <Button
                             danger
                             icon={<DeleteOutlined />}
                             className={
-                                darkMode ? "bg-red-700 hover:bg-red-800 text-white" : ""
+                                darkMode ? "bg-red-700 hover:bg-red-800 text-white border-none" : ""
                             }
                         >
                             {t.clearAll}
@@ -124,7 +143,7 @@ const MainActionsButtons = ({
                 isModalVisible={isModalVisible}
                 setIsModalVisible={setIsModalVisible}
             />
-        </>
+        </ConfigProvider>
     );
 };
 

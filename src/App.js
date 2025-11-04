@@ -2,7 +2,7 @@ import React from "react";
 import { ConfigProvider, theme as antdTheme } from "antd";
 import arEG from "antd/locale/ar_EG";
 import enUS from "antd/locale/en_US";
-import VoiceExpenseDashboard from "./pages/VoiceExpenseDashboard";
+import VoiceExpenseDashboard from "./pages/DashboardContent";
 import '@ant-design/v5-patch-for-react-19';
 import "antd/dist/reset.css";
 import "./index.css";
@@ -10,8 +10,9 @@ import "./index.css";
 import { ExpenseProvider } from "./context/ExpenseContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
+import { TabProvider } from "./context/TabContext"; // ✅ إضافة TabProvider
 
-// Internal wrapper so we can use both contexts together
+// Internal wrapper so we can use all contexts together
 function AppContent() {
     const { language } = useLanguage();
     const { theme } = useTheme();
@@ -19,7 +20,6 @@ function AppContent() {
     // Determine if it's Arabic (RTL)
     const isArabic = language === "ar";
 
-    // Configure Ant Design direction and theme
     return (
         <ConfigProvider
             direction={isArabic ? "rtl" : "ltr"}
@@ -48,7 +48,9 @@ export default function App() {
             <ThemeProvider>
                 <LanguageProvider>
                     <ExpenseProvider>
-                        <AppContent />
+                        <TabProvider> {/* ✅ إضافة TabProvider هنا */}
+                            <AppContent />
+                        </TabProvider>
                     </ExpenseProvider>
                 </LanguageProvider>
             </ThemeProvider>

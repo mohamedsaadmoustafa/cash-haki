@@ -14,7 +14,7 @@ import { useLanguage } from "../../context/LanguageContext";
 
 export default function CumulativeExpenseAreaChart({ data }) {
     const { darkMode } = useTheme();
-    const { t } = useLanguage(); // use translation hook
+    const { t } = useLanguage();
 
     const axisColor = darkMode ? "#ccc" : "#333";
     const gridColor = darkMode ? "#444" : "#e0e0e0";
@@ -30,7 +30,9 @@ export default function CumulativeExpenseAreaChart({ data }) {
             <h4 className="text-sm font-medium mb-3">{t("cumulativeExpenses")}</h4>
 
             {data.length === 0 ? (
-                <Empty description={t("noDataYet")} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <Empty description={<span style={{color: darkMode ? "#ccc" : "#555"}}>
+                    {t("noDataYet")}
+                </span>} image={Empty.PRESENTED_IMAGE_SIMPLE}/>
             ) : (
                 <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={data}>

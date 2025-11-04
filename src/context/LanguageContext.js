@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import ar from "../locales/ar";
 import en from "../locales/en";
 
@@ -7,17 +7,29 @@ const LanguageContext = createContext();
 const translations = { ar, en };
 
 export function LanguageProvider({ children }) {
-    const [language, setLanguage] = useState("ar");
+    // Remember last selected language
+    const [language, setLanguage] = useState(() => localStorage.getItem("language") || "en");
 
-    const toggleLanguage = () => {
-        setLanguage((prev) => (prev === "ar" ? "en" : "ar"));
-    };
+    useEffect(() => {
+        localStorage.setItem("language", language);
+        document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    }, [language]);
 
-    const t = (key) => translations[language][key] || key;
+    // Toggle between Arabic / English
+    const toggleLanguage = () => setLanguage((prev) => (prev === "ar" ? "en" : "ar"));
+
+    // Translation helper
+    const t = useMemo(
+        () => (key) => {
+            const dict = translations[language] || translations.en;
+            return dict[key] ?? translations.en[key] ?? key;
+        },
+        [language]
+    );
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, t }}>
-            <div dir={language === "ar" ? "rtl" : "ltr"}>{children}</div>
+        <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+            {children}
         </LanguageContext.Provider>
     );
 }

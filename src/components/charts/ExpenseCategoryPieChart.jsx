@@ -1,12 +1,12 @@
 import React from "react";
-import { Card, Empty } from "antd";
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import { useTheme } from "../../context/ThemeContext";
-import { useLanguage } from "../../context/LanguageContext";
+import {Card, Empty} from "antd";
+import {PieChart, Pie, Tooltip, Cell, ResponsiveContainer} from "recharts";
+import {useTheme} from "../../context/ThemeContext";
+import {useLanguage} from "../../context/LanguageContext";
 
-export default function ExpenseCategoryPieChart({ data }) {
-    const { darkMode } = useTheme();
-    const { t } = useLanguage(); // use translation hook
+export default function ExpenseCategoryPieChart({data}) {
+    const {darkMode} = useTheme();
+    const {t} = useLanguage();
 
     const COLORS = ["#1677ff", "#4ade80", "#facc15", "#f97316", "#ef4444"];
 
@@ -20,7 +20,11 @@ export default function ExpenseCategoryPieChart({ data }) {
             <h4 className="text-sm font-medium mb-3">{t("expensesByCategory")}</h4>
 
             {data.length === 0 ? (
-                <Empty description={t("noDataYet")} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <Empty description={
+                    <span style={{color: darkMode ? "#ccc" : "#555"}}>
+                        {t("noDataYet")}
+                    </span>
+                } image={Empty.PRESENTED_IMAGE_SIMPLE}/>
             ) : (
                 <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
@@ -33,7 +37,7 @@ export default function ExpenseCategoryPieChart({ data }) {
                             label
                         >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
                             ))}
                         </Pie>
                         <Tooltip
