@@ -22,34 +22,9 @@ const MainActionsButtons = ({
                                 undo,
                             }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { language } = useLanguage();
-    const { darkMode } = useTheme(); // ✅ correct from your ThemeContext
+    const { language, t } = useLanguage();
+    const { darkMode } = useTheme();
     const isArabic = language === "ar";
-
-    const t = {
-        ar: {
-            startVoice: "ابدأ صوت",
-            listening: "يستمع...",
-            stop: "إيقاف",
-            addExpense: "إضافة مصروف",
-            exportCSV: "تصدير CSV",
-            clearAll: "مسح الكل",
-            confirmClear: "مسح كل البنود؟",
-            undo: "تراجع",
-            startTooltip: "ابدأ التحدث",
-        },
-        en: {
-            startVoice: "Start Voice",
-            listening: "Listening...",
-            stop: "Stop",
-            addExpense: "Add Expense",
-            exportCSV: "Export CSV",
-            clearAll: "Clear All",
-            confirmClear: "Clear all items?",
-            undo: "Undo",
-            startTooltip: "Start speaking",
-        },
-    }[language];
 
     const handleExport = () => {
         if (!list?.length) return;
@@ -79,7 +54,7 @@ const MainActionsButtons = ({
                 } ${isArabic ? "rtl text-right" : "ltr text-left"}`}
             >
                 <Space wrap size="middle">
-                    <Tooltip title={t.startTooltip}>
+                    <Tooltip title={t("startTooltip")}>
                         <Button
                             type={listening ? "primary" : "default"}
                             icon={<PlayCircleOutlined />}
@@ -88,12 +63,12 @@ const MainActionsButtons = ({
                                 listening ? "!bg-blue-600 !text-white" : ""
                             }`}
                         >
-                            {listening ? t.listening : t.startVoice}
+                            {listening ? t("listening") : t("startVoice")}
                         </Button>
                     </Tooltip>
 
                     <Button icon={<StopOutlined />} onClick={stopListening} className={btnBase}>
-                        {t.stop}
+                        {t("stop")}
                     </Button>
 
                     <Button
@@ -102,7 +77,7 @@ const MainActionsButtons = ({
                         onClick={() => setIsModalVisible(true)}
                         className={btnBase}
                     >
-                        {t.addExpense}
+                        {t("addExpense")}
                     </Button>
 
                     <Button
@@ -113,13 +88,13 @@ const MainActionsButtons = ({
                             !list?.length ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                     >
-                        {t.exportCSV}
+                        {t("exportCSV")}
                     </Button>
 
                     <Popconfirm
-                        title={t.confirmClear}
+                        title={t("confirmClear")}
                         onConfirm={clearAll}
-                        okText={t.clearAll}
+                        okText={t("clearAll")}
                         overlayClassName={darkMode ? "dark-modal" : ""}
                     >
                         <Button
@@ -129,12 +104,12 @@ const MainActionsButtons = ({
                                 darkMode ? "bg-red-700 hover:bg-red-800 text-white border-none" : ""
                             }
                         >
-                            {t.clearAll}
+                            {t("clearAll")}
                         </Button>
                     </Popconfirm>
 
                     <Button onClick={undo} icon={<UndoOutlined />} className={btnBase}>
-                        {t.undo}
+                        {t("undo")}
                     </Button>
                 </Space>
             </div>
