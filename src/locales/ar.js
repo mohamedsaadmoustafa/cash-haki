@@ -56,7 +56,24 @@ const ar =  {
     "ascending": "تصاعدي",
     "descending": "تنازلي",
     "undefinedCategory": "الفئة غير محددة",
-
+    startVoice: "ابدأ صوت",
+    listening: "يستمع...",
+    stop: "إيقاف",
+    addExpense: "إضافة مصروف",
+    exportCSV: "تصدير CSV",
+    clearAll: "مسح الكل",
+    confirmClear: "مسح كل البنود؟",
+    undo: "تراجع",
+    startTooltip: "ابدأ التحدث",
+    noExpensesDetected: "لم يتم فهم نفقات من الكلام. قل مثلاً: قهوة بـ20",
+    browserNotSupported: "المتصفح لا يدعم التعرف على الكلام.",
+    listeningStarted: "بدأ الاستماع — احكي جملك بالعربية، مثلاً: قهوة بـ20...",
+    failedStartListening: "فشل بدء الاستماع. تحقق من صلاحيات الميكروفون.",
+    listeningStopped: "تم إيقاف الاستماع.",
+    LiveTranscriptCleared: "تم مسح النص المباشر.",
+    liveTranscriptLabel: "النص المباشر:",
+    pressStart: "اضغط للبدء...",
+    clearLiveTranscript: "مسح النص المباشر",
 };
 
 export default ar;

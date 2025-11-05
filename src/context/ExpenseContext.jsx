@@ -16,6 +16,7 @@ const ExpenseContext = createContext(null);
 
 export function ExpenseProvider({ children }) {
     const { t } = useLanguage();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [list, setList] = useState(() => loadFromStorage() || []);
     const [listTotal, setListTotal] = useState(0);
@@ -34,15 +35,15 @@ export function ExpenseProvider({ children }) {
             const updated = [...newItems, ...list];
             undoRef.current = { before: list, after: updated };
             setList(updated);
-            message.success(t("itemsAdded", { count: newItems.length }));
+            messageApi.success(t("itemsAdded").replace("{count}", newItems.length));
         },
-        [list, t]
+        [list, t, messageApi]
     );
 
     const addManual = useCallback(
         (item) => {
             if (!item || !item.desc || !item.amount) {
-                return message.warning(t("invalidItem"));
+                return messageApi.warning(t("invalidItem"));
             }
             const newItem = {
                 ...item,
@@ -53,11 +54,10 @@ export function ExpenseProvider({ children }) {
             const updated = [newItem, ...list];
             undoRef.current = { before: list, after: updated };
             setList(updated);
-            message.success(t("expenseAdded"));
+            messageApi.success(t("expenseAdded"));
         },
-        [list, t]
+        [list, t, messageApi]
     );
-
 
     const editItem = useCallback(
         (updatedItem) => {
@@ -66,9 +66,9 @@ export function ExpenseProvider({ children }) {
             setList((prev) =>
                 prev.map((i) => (i.id === updatedItem.id ? { ...i, ...updatedItem } : i))
             );
-            message.success(t("expenseUpdated"));
+            messageApi.success(t("expenseUpdated"));
         },
-        [list, t]
+        [list, t, messageApi]
     );
 
     const removeItem = useCallback(
@@ -76,24 +76,24 @@ export function ExpenseProvider({ children }) {
             const updated = list.filter((i) => i.id !== id);
             undoRef.current = { before: list, after: updated };
             setList(updated);
-            message.success(t("expenseRemoved"));
+            messageApi.success(t("expenseRemoved"));
         },
-        [list, t]
+        [list, t, messageApi]
     );
 
     const clearAll = useCallback(() => {
-        if (list.length === 0) return message.info(t("nothingToClear"));
+        if (list.length === 0) return messageApi.info(t("nothingToClear"));
         undoRef.current = { before: list, after: [] };
         setList([]);
-        message.success(t("allCleared"));
-    }, [list, t]);
+        messageApi.success(t("allCleared"));
+    }, [list, t, messageApi]);
 
     const undo = useCallback(() => {
-        if (!undoRef.current) return message.info(t("nothingToUndo"));
+        if (!undoRef.current) return messageApi.info(t("nothingToUndo"));
         setList(undoRef.current.before);
         undoRef.current = null;
-        message.success(t("undoSuccess"));
-    }, [t]);
+        messageApi.success(t("undoSuccess"));
+    }, [t, messageApi]);
 
     const monthlyData = useMemo(() => {
         const byMonth = {};
@@ -135,7 +135,12 @@ export function ExpenseProvider({ children }) {
         undo,
     };
 
-    return <ExpenseContext.Provider value={value}>{children}</ExpenseContext.Provider>;
+    return (
+        <>
+            {contextHolder}
+            <ExpenseContext.Provider value={value}>{children}</ExpenseContext.Provider>
+        </>
+    );
 }
 
 export const useExpenses = () => {

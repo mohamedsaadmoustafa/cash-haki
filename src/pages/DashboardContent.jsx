@@ -1,6 +1,5 @@
 import React from "react";
 import { Layout, Row, Col, Tabs } from "antd";
-import { useVoiceRecognition } from "../hooks/useVoiceRecognition";
 import { useExpenses } from "../context/ExpenseContext";
 import ExpenseStatsCard from "../components/layout/ExpenseStatsCard";
 import ExpenseTrendChart from "../components/charts/ExpenseTrendChart";
@@ -13,6 +12,7 @@ import ExpenseCategoryPieChart from "../components/charts/ExpenseCategoryPieChar
 import MonthlyExpenseBarChart from "../components/charts/MonthlyExpenseBarChart";
 import CumulativeExpenseAreaChart from "../components/charts/CumulativeExpenseAreaChart";
 import { useTab } from "../context/TabContext";
+import { useVoiceRecognitionLive } from "../hooks/useVoiceRecognitionLive";
 
 export default function DashboardContent() {
     const {
@@ -28,7 +28,16 @@ export default function DashboardContent() {
         clearAll,
     } = useExpenses();
 
-    const { listening, startListening, stopListening } = useVoiceRecognition(addItems);
+    // ✅ Use updated hook with contextHolder
+    const {
+        listening,
+        liveTranscript,
+        startListening,
+        stopListening,
+        clearLiveTranscript,
+        contextHolder,
+    } = useVoiceRecognitionLive(addItems);
+
     const { t } = useLanguage();
     const { darkMode } = useTheme();
     const { activeTab, changeTab } = useTab();
@@ -37,7 +46,6 @@ export default function DashboardContent() {
         ? "bg-gray-800 text-gray-100 rounded-2xl p-4 transition-colors"
         : "bg-white text-gray-900 rounded-2xl p-4 transition-colors";
 
-    // Define tabs using the `items` API
     const items = [
         {
             key: "1",
@@ -78,8 +86,10 @@ export default function DashboardContent() {
                 <div className={`space-y-6 mt-4 ${tabPaneClass}`}>
                     <MainActionsButtons
                         listening={listening}
+                        liveTranscript={liveTranscript}
                         startListening={startListening}
                         stopListening={stopListening}
+                        clearLiveTranscript={clearLiveTranscript}
                         list={list}
                         clearAll={clearAll}
                         undo={undo}
@@ -102,6 +112,9 @@ export default function DashboardContent() {
                 darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"
             }`}
         >
+            {/* ✅ Render contextHolder at the top of the tree */}
+            {contextHolder}
+
             <div className="max-w-7xl mx-auto w-full space-y-6">
                 <Header />
 
@@ -115,7 +128,7 @@ export default function DashboardContent() {
                         borderBottom: "none",
                         color: darkMode ? "#f3f4f6" : "#111827",
                     }}
-                    items={items} // <- Use `items` instead of TabPane
+                    items={items}
                 />
             </div>
         </Layout>
