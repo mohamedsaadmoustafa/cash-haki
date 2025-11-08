@@ -8,7 +8,7 @@ import React, {
     useMemo,
 } from "react";
 import { message } from "antd";
-import { loadFromStorage, saveToStorage } from "../helpers/storage";
+import { loadFromStorage, saveToStorage, clearStorage } from "../helpers/storage";
 import { computeTotals } from "../helpers/compute";
 import { useLanguage } from "./LanguageContext";
 
@@ -85,6 +85,7 @@ export function ExpenseProvider({ children }) {
         if (list.length === 0) return messageApi.info(t("nothingToClear"));
         undoRef.current = { before: list, after: [] };
         setList([]);
+        clearStorage(); // ✅ clears only data, keeps demo flag
         messageApi.success(t("allCleared"));
     }, [list, t, messageApi]);
 
